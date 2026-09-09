@@ -46,11 +46,18 @@ export function useLiveTasks(seed: Task[]) {
     setError("");
     setSaving(task.id);
     setTasks((current) =>
-      current.map((item) =>
-        item.id === task.id
-          ? { ...item, status: completed ? "Complete" : wasComplete ? "Ready" : item.status }
-          : item,
-      ),
+      current.map((item) => {
+        if (item.id !== task.id) return item;
+        if (completed) return { ...item, status: "Complete" };
+        const original = seed.find((row) => row.id === task.id);
+        return {
+          ...item,
+          status:
+            original?.status && original.status !== "Complete"
+              ? original.status
+              : "Ready",
+        };
+      }),
     );
     try {
       const response = await fetch("/api/tasks", {
@@ -59,8 +66,17 @@ export function useLiveTasks(seed: Task[]) {
         body: JSON.stringify({ taskId: task.id, completed, actor: "Ryan" }),
       });
       if (!response.ok) throw new Error("failed");
-      const payload = (await response.json()) as { activity: TaskActivity };
+      const payload = (await response.json()) as {
+        activity: TaskActivity;
+        state?: { isCompleted: boolean };
+      };
       setActivity((current) => [payload.activity, ...current]);
+      const refresh = await fetch("/api/tasks");
+      if (refresh.ok) {
+        const next = (await refresh.json()) as { tasks?: Task[]; activity?: TaskActivity[] };
+        if (next.tasks) setTasks(next.tasks);
+        if (next.activity) setActivity(next.activity);
+      }
     } catch {
       setTasks((current) =>
         current.map((item) => (item.id === task.id ? task : item)),
@@ -69,7 +85,7 @@ export function useLiveTasks(seed: Task[]) {
     } finally {
       setSaving(null);
     }
-  }, []);
+  }, [seed]);
 
   return { tasks, activity, saving, error, toggle };
 }
