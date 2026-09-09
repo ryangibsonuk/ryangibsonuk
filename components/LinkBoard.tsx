@@ -23,9 +23,9 @@ export function LinkBoard({ links }: { links: TrustedLink[] }) {
         </p>
         <h1 className="display mt-2 text-4xl">Links</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          Drive folders, content trackers and live sites. OAuth two-way Drive
-          sync is not on yet — these are the canonical records to open by hand
-          or hand to Grok Bot.
+          Drive folders, content trackers and live sites. Completing a linked
+          task writes back to Drive when Google is connected. These links remain
+          the canonical records to open by hand.
         </p>
       </header>
       <SearchField value={query} onChange={setQuery} placeholder="Search links" />

@@ -8,7 +8,8 @@ import {
   findTask,
   getSeedTasks,
 } from "@/lib/data";
-import { listTaskActivity, listTaskStates, setTaskCompletion } from "@/lib/db";
+import { listTaskActivity, listTaskStates } from "@/lib/db";
+import { applyAndSync } from "@/lib/fanout";
 import { integrationKeyOk } from "@/lib/status";
 import { applyTaskStates } from "@/lib/tasks";
 import { ASSISTANT_ACTORS } from "@/lib/types";
@@ -96,13 +97,12 @@ export async function POST(request: NextRequest) {
       ) {
         return NextResponse.json({ error: "Invalid task update" }, { status: 400 });
       }
-      const saved = setTaskCompletion({
-        taskId: task.id,
-        project: task.project,
-        title: task.title,
+      const saved = await applyAndSync({
+        task,
         completed: params.completed,
         actor,
         result: typeof params.result === "string" ? params.result : undefined,
+        origin: actor === "ChatGPT" ? "chatgpt" : "hq",
       });
       return NextResponse.json({ ok: true, ...saved });
     }

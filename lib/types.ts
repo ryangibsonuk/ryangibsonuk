@@ -96,6 +96,10 @@ export type IntegrationStatus = {
   apiKey: boolean;
   model: string;
   githubUser: string;
+  google: boolean;
+  googleEmail: string | null;
+  googleConfigured: boolean;
+  chatgpt: boolean;
 };
 
 export const SOURCES = [

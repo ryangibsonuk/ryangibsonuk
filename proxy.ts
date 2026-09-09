@@ -8,6 +8,10 @@ export function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/unlock") ||
     pathname.startsWith("/api/unlock") ||
+    pathname.startsWith("/api/integrations") ||
+    pathname.startsWith("/api/mcp") ||
+    pathname.startsWith("/api/v1/register") ||
+    pathname.startsWith("/api/auth/google/callback") ||
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico"
   ) {

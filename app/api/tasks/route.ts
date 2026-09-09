@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findTask } from "@/lib/data";
-import { listTaskActivity, listTaskStates, setTaskCompletion } from "@/lib/db";
+import { listTaskActivity, listTaskStates } from "@/lib/db";
+import { applyAndSync } from "@/lib/fanout";
 import { applyTaskStates } from "@/lib/tasks";
 
 export const runtime = "nodejs";
@@ -33,13 +34,12 @@ export async function POST(request: NextRequest) {
     if (!task || typeof payload.completed !== "boolean") {
       return NextResponse.json({ error: "Invalid task update" }, { status: 400 });
     }
-    const saved = setTaskCompletion({
-      taskId: task.id,
-      project: task.project,
-      title: task.title,
+    const saved = await applyAndSync({
+      task,
       completed: payload.completed,
       actor: payload.actor?.trim() || "Ryan",
       result: payload.result,
+      origin: "hq",
     });
     return NextResponse.json(saved);
   } catch (error) {

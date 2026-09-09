@@ -26,7 +26,7 @@ export function TodayBoard({
   schedules: Schedule[];
   status: IntegrationStatus;
 }) {
-  const { tasks, activity, saving, error, toggle } = useLiveTasks(seedTasks);
+  const { tasks, activity, saving, error, syncNote, toggle } = useLiveTasks(seedTasks);
   const [query, setQuery] = useState("");
   const hello = greeting();
 
@@ -72,8 +72,8 @@ export function TodayBoard({
         </p>
         <h1 className="display mt-2 text-4xl leading-none sm:text-5xl">{hello}</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          The ChatGPT Control Centre is the register. This HQ is the source you
-          can version, run, and let Cursor and Grok write back to.
+          Completing a task writes to HQ, then to Gmail, Drive and the ChatGPT
+          Control Centre when those are connected.
         </p>
       </header>
 
@@ -90,10 +90,12 @@ export function TodayBoard({
           {complete}/{tasks.length} complete · {pct}%
         </Pill>
         <Pill>Grok {status.grok ? "chat on" : "needs key"}</Pill>
-        <Pill>API {status.apiKey ? "key set" : "open in dev"}</Pill>
+        <Pill>Google {status.google ? status.googleEmail || "on" : "off"}</Pill>
+        <Pill>ChatGPT {status.chatgpt ? "url set" : "needs URL"}</Pill>
       </div>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}
+      {syncNote ? <p className="text-sm text-ink-soft">{syncNote}</p> : null}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>

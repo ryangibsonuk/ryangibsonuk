@@ -1,8 +1,12 @@
 import type { IntegrationStatus } from "./types";
+import { chatgptStatus } from "./chatgpt";
+import { googleStatus } from "./google";
 import { grokConfig } from "./grok";
 
 export function getIntegrationStatus(): IntegrationStatus {
   const { configured, model } = grokConfig();
+  const google = googleStatus();
+  const chatgpt = chatgptStatus();
   return {
     grok: configured,
     ingest: Boolean(process.env.INGEST_SECRET?.trim()),
@@ -11,6 +15,10 @@ export function getIntegrationStatus(): IntegrationStatus {
     apiKey: Boolean(process.env.CONTROL_CENTRE_API_KEY?.trim()),
     model,
     githubUser: process.env.GITHUB_USERNAME?.trim() || "ryangibsonuk",
+    google: google.connected,
+    googleEmail: google.email,
+    googleConfigured: google.configured,
+    chatgpt: chatgpt.configured,
   };
 }
 

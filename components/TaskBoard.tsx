@@ -17,6 +17,7 @@ export function useLiveTasks(seed: Task[]) {
   const [activity, setActivity] = useState<TaskActivity[]>([]);
   const [saving, setSaving] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [syncNote, setSyncNote] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -44,6 +45,7 @@ export function useLiveTasks(seed: Task[]) {
     const wasComplete = task.status === "Complete";
     const completed = !wasComplete;
     setError("");
+    setSyncNote("");
     setSaving(task.id);
     setTasks((current) =>
       current.map((item) => {
@@ -69,8 +71,18 @@ export function useLiveTasks(seed: Task[]) {
       const payload = (await response.json()) as {
         activity: TaskActivity;
         state?: { isCompleted: boolean };
+        sync?: { channel: string; ok: boolean; detail: string }[];
       };
       setActivity((current) => [payload.activity, ...current]);
+      const fails = (payload.sync ?? []).filter((item) => !item.ok);
+      const wrote = (payload.sync ?? []).filter(
+        (item) => item.ok && !item.detail.startsWith("No "),
+      );
+      if (fails.length) {
+        setSyncNote(fails.map((item) => `${item.channel}: ${item.detail}`).join(" "));
+      } else if (wrote.length) {
+        setSyncNote(`Also updated ${wrote.map((item) => item.channel).join(", ")}.`);
+      }
       const refresh = await fetch("/api/tasks");
       if (refresh.ok) {
         const next = (await refresh.json()) as { tasks?: Task[]; activity?: TaskActivity[] };
@@ -87,11 +99,11 @@ export function useLiveTasks(seed: Task[]) {
     }
   }, [seed]);
 
-  return { tasks, activity, saving, error, toggle };
+  return { tasks, activity, saving, error, syncNote, toggle };
 }
 
 export function TaskBoard({ seed }: { seed: Task[] }) {
-  const { tasks, saving, error, toggle } = useLiveTasks(seed);
+  const { tasks, saving, error, syncNote, toggle } = useLiveTasks(seed);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<TaskStatus | "All">("All");
 
@@ -113,8 +125,8 @@ export function TaskBoard({ seed }: { seed: Task[] }) {
         </p>
         <h1 className="display mt-2 text-4xl">Tasks</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          Completions write to the local SQLite store. ChatGPT, Cursor and Grok
-          use the same store through the integration API.
+          Completions write to HQ first, then to Gmail, Drive and the ChatGPT
+          app when those are connected. Assistants share the same store.
         </p>
       </header>
       <SearchField
@@ -146,6 +158,7 @@ export function TaskBoard({ seed }: { seed: Task[] }) {
         ))}
       </div>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
+      {syncNote ? <p className="text-sm text-ink-soft">{syncNote}</p> : null}
       {visible.length === 0 ? (
         <p className="text-sm text-muted">Nothing in this view matches that search.</p>
       ) : (

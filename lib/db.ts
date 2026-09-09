@@ -38,6 +38,25 @@ function db(): DatabaseSync {
       url TEXT,
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS oauth_tokens (
+      provider TEXT PRIMARY KEY NOT NULL,
+      access_token TEXT,
+      refresh_token TEXT NOT NULL,
+      expiry TEXT,
+      email TEXT,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS sync_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      channel TEXT NOT NULL,
+      ok INTEGER NOT NULL,
+      detail TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT NOT NULL
+    );
   `);
   seedCompleted(client);
   cached = client;
@@ -194,4 +213,104 @@ export function appendNote(input: {
       createdAt,
     );
   return { id: Number(info.lastInsertRowid), createdAt, ...input };
+}
+
+export type OAuthToken = {
+  provider: string;
+  accessToken: string | null;
+  refreshToken: string;
+  expiry: string | null;
+  email: string | null;
+  updatedAt: string;
+};
+
+export function getOAuthToken(provider: string): OAuthToken | null {
+  const row = db()
+    .prepare("SELECT * FROM oauth_tokens WHERE provider = ?")
+    .get(provider) as Record<string, unknown> | undefined;
+  if (!row) return null;
+  return {
+    provider: String(row.provider),
+    accessToken: (row.access_token as string | null) ?? null,
+    refreshToken: String(row.refresh_token),
+    expiry: (row.expiry as string | null) ?? null,
+    email: (row.email as string | null) ?? null,
+    updatedAt: String(row.updated_at),
+  };
+}
+
+export function saveOAuthToken(token: {
+  provider: string;
+  accessToken?: string | null;
+  refreshToken: string;
+  expiry?: string | null;
+  email?: string | null;
+}) {
+  const now = new Date().toISOString();
+  db()
+    .prepare(
+      `INSERT INTO oauth_tokens (provider, access_token, refresh_token, expiry, email, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(provider) DO UPDATE SET
+         access_token = excluded.access_token,
+         refresh_token = excluded.refresh_token,
+         expiry = excluded.expiry,
+         email = COALESCE(excluded.email, oauth_tokens.email),
+         updated_at = excluded.updated_at`,
+    )
+    .run(
+      token.provider,
+      token.accessToken ?? null,
+      token.refreshToken,
+      token.expiry ?? null,
+      token.email ?? null,
+      now,
+    );
+}
+
+export function clearOAuthToken(provider: string) {
+  db().prepare("DELETE FROM oauth_tokens WHERE provider = ?").run(provider);
+}
+
+export function logSync(channel: string, ok: boolean, detail: string) {
+  db()
+    .prepare(
+      `INSERT INTO sync_log (channel, ok, detail, created_at) VALUES (?, ?, ?, ?)`,
+    )
+    .run(channel, ok ? 1 : 0, detail.slice(0, 2000), new Date().toISOString());
+}
+
+export function listSyncLog(limit = 20) {
+  const rows = db()
+    .prepare(
+      "SELECT * FROM sync_log ORDER BY id DESC LIMIT ?",
+    )
+    .all(limit) as Record<string, unknown>[];
+  return rows.map((row) => ({
+    id: Number(row.id),
+    channel: String(row.channel),
+    ok: Boolean(row.ok),
+    detail: String(row.detail),
+    createdAt: String(row.created_at),
+  }));
+}
+
+export function getSetting(key: string): string | null {
+  const row = db()
+    .prepare("SELECT value FROM settings WHERE key = ?")
+    .get(key) as { value?: string } | undefined;
+  return row?.value ?? null;
+}
+
+export function setSetting(key: string, value: string) {
+  db()
+    .prepare(
+      `INSERT INTO settings (key, value) VALUES (?, ?)
+       ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+    )
+    .run(key, value);
+}
+
+export function deleteSetting(key: string) {
+  db().prepare("DELETE FROM settings WHERE key = ?").run(key);
 }

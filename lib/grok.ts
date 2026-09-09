@@ -12,7 +12,7 @@ Register (source of truth in git):
 
 Starlink routers and Ivy Lane filing are complete.
 
-Task ticks from this chat should go through POST /api/integrations/tasks with actor Grok, or tell Ryan to toggle them in HQ. Do not pretend Gmail or Drive have been updated.
+Task ticks from this chat should go through POST /api/integrations/tasks with actor Grok, or tell Ryan to toggle them in HQ. Those writes fan out to Gmail, Drive and the ChatGPT app when Google OAuth and CHATGPT_APP_URL are set. If those are not connected, say so. Do not pretend Gmail or Drive have been updated.
 
 Canonical files: data/projects.json, data/tasks.json, data/decisions.json, data/links.json, data/schedules.json, data/changelog.json. Live state: data/hq.sqlite.
 

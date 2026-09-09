@@ -26,7 +26,7 @@ Do not chase Andrew Armitage or Carl Davies. Do not invent work for FamilyCyclin
 | `data/changelog.json` | Historic log |
 | `data/hq.sqlite` | Live completions (gitignored) |
 
-Task completion is **not** a JSON edit. Use the API so ChatGPT, Cursor and Grok stay in sync:
+Task completion is **not** a JSON edit. Use the API so ChatGPT, Cursor and Grok stay in sync, then HQ fans out to Gmail, Drive and the published ChatGPT app:
 
 ```
 POST /api/integrations/tasks
@@ -38,7 +38,19 @@ Allowed actors: `ChatGPT`, `Cursor`, `Grok`. UI toggles use actor `Ryan` via `PO
 
 MCP: `GET /api/mcp` lists tools. `POST /api/mcp` with `{ "method": "list_tasks" }` or `{ "method": "update_task", "params": { "taskId", "completed", "actor" } }`.
 
-Gmail and Google Drive are **links only**. Do not claim two-way sync.
+## Two-way sync
+
+Completing a task in HQ fans out:
+
+- Gmail: HQ and HQ/Complete labels, mark read (thread IDs from mail.google.com links)
+- Drive: append a row to Gibson HQ Sync; folder links upsert `hq-task-{id}.json`; spreadsheet links upsert a Gibson HQ tab
+- ChatGPT: POST `{CHATGPT_APP_URL}/api/integrations/tasks`
+
+Inbound: Teammates → Sync now, or `POST /api/sync`. ChatGPT can also POST here as actor ChatGPT.
+
+Google needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, then Connect Google. ChatGPT needs `CHATGPT_APP_URL`.
+
+Gmail and Drive writes only happen after OAuth. Without credentials, HQ still stores the tick locally.
 
 ## Run
 
