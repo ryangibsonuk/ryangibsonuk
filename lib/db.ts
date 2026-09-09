@@ -363,7 +363,13 @@ export function clearOAuthToken(provider: string) {
 }
 
 export function logSync(channel: string, ok: boolean, detail: string) {
-  db()
+  const client = db();
+  if (ok) {
+    client
+      .prepare("DELETE FROM sync_log WHERE channel = ? AND ok = 0")
+      .run(channel);
+  }
+  client
     .prepare(
       `INSERT INTO sync_log (channel, ok, detail, created_at) VALUES (?, ?, ?, ?)`,
     )
