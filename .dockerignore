@@ -1,0 +1,25 @@
+# Dependencies and Next build output
+node_modules
+.next
+out
+build
+coverage
+
+# Git and editor
+.git
+.gitignore
+.cursor
+.vscode
+*.md
+
+# Secrets and local state
+.env
+.env.*
+!.env.example
+data/hq.sqlite
+data/activity.local.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
