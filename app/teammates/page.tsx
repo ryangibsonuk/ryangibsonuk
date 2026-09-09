@@ -5,7 +5,11 @@ import { chatgptStatus } from "@/lib/chatgpt";
 import { getProjects } from "@/lib/data";
 import { listSyncLog } from "@/lib/db";
 import { googleClient } from "@/lib/google";
-import { googleCallbackUrl, publicOrigin } from "@/lib/origin";
+import {
+  googleCallbackUrl,
+  oauthRedirectWarning,
+  publicOrigin,
+} from "@/lib/origin";
 import { getIntegrationStatus } from "@/lib/status";
 
 export default async function TeammatesPage({
@@ -18,6 +22,7 @@ export default async function TeammatesPage({
   const chatgpt = chatgptStatus();
   const params = await searchParams;
   const callbackUrl = googleCallbackUrl(await publicOrigin());
+  const googleRedirectNote = oauthRedirectWarning(callbackUrl);
 
   const mates = [
     {
@@ -82,6 +87,7 @@ export default async function TeammatesPage({
         chatgptConfigured={status.chatgpt}
         chatgptUrl={chatgpt.url}
         callbackUrl={callbackUrl}
+        googleRedirectNote={googleRedirectNote}
         log={listSyncLog(15)}
         googleResult={params.google}
       />

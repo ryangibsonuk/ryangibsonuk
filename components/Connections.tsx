@@ -19,6 +19,7 @@ export function Connections({
   chatgptConfigured,
   chatgptUrl,
   callbackUrl,
+  googleRedirectNote,
   log,
   googleResult,
 }: {
@@ -29,6 +30,7 @@ export function Connections({
   chatgptConfigured: boolean;
   chatgptUrl: string | null;
   callbackUrl: string;
+  googleRedirectNote: string | null;
   log: SyncLogEntry[];
   googleResult?: string;
 }) {
@@ -217,7 +219,7 @@ export function Connections({
           </li>
         </ol>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <code className="rounded-full bg-paper-2 px-3 py-2 text-xs sm:text-sm">
+          <code className="break-all rounded-full bg-paper-2 px-3 py-2 text-xs sm:text-sm">
             {callbackUrl}
           </code>
           <button
@@ -228,9 +230,22 @@ export function Connections({
             {copied ? "Copied" : "Copy URI"}
           </button>
         </div>
+        {googleRedirectNote ? (
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-danger">
+            {googleRedirectNote}
+          </p>
+        ) : null}
         <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
           Under OAuth consent screen, add your Google account as a test user.
-          Then paste the client ID and secret here.
+          Then paste the client ID and secret here. Also add{" "}
+          <code className="rounded bg-paper-2 px-1">
+            http://localhost:3000/api/auth/google/callback
+          </code>{" "}
+          and{" "}
+          <code className="rounded bg-paper-2 px-1">
+            http://127.0.0.1:3000/api/auth/google/callback
+          </code>
+          . Google rejects 0.0.0.0 and temporary tunnels.
         </p>
         <form onSubmit={saveGoogle} className="mt-4 grid gap-3">
           <label className="block max-w-xl">

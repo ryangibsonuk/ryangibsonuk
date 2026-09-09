@@ -65,7 +65,7 @@ Completing or reopening a task writes SQLite first (`data/hq.sqlite`, gitignored
 
 Inbound is Teammates → Sync now, or `POST /api/sync`. That reads Gmail labels, Drive status files/tabs, and ChatGPT D1 states. Newer remote timestamps win; a missing Gmail HQ label is not treated as reopen.
 
-Google needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, then **Connect Google** on Teammates. Add the OAuth redirect `{origin}/api/auth/google/callback` and yourself as a test user (Gmail and Drive scopes are sensitive). ChatGPT needs the published app origin: paste it on Teammates or set `CHATGPT_APP_URL`. The ChatGPT app can also POST here as actor ChatGPT.
+Google needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, then **Connect Google** on Control panel. Add the OAuth redirect shown on that page (never `0.0.0.0`; Google also rejects trycloudflare/ngrok). For this agent, use `http://localhost:3000/api/auth/google/callback` via Cursor port forward, and add yourself as a test user. Gmail and Drive scopes are sensitive. ChatGPT needs the published app origin: paste it on Control panel or set `CHATGPT_APP_URL`. The ChatGPT app can also POST here as actor ChatGPT.
 
 Without those credentials, ticks still save in HQ.
 
