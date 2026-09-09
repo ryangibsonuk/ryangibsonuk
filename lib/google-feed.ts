@@ -1,5 +1,5 @@
 import { getSetting, logSync, upsertNote } from "./db";
-import type { SyncResult } from "./google";
+import { skipped, type SyncResult } from "./google";
 
 export function googleFeedConfigured(): boolean {
   return Boolean(googleFeedUrl());
@@ -32,11 +32,10 @@ type ScriptItem = {
 export async function pullGoogleFeed(): Promise<SyncResult> {
   const base = googleFeedUrl();
   if (!base) {
-    return {
-      channel: "google-feed",
-      ok: true,
-      detail: "Skipped until you Allow Google with the Apps Script.",
-    };
+    return skipped(
+      "google-feed",
+      "Allow Google with the Apps Script on Control panel.",
+    );
   }
   try {
     const token = googleFeedToken();

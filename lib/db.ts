@@ -11,10 +11,27 @@ const dbPath = join(dataDir, "hq.sqlite");
 
 let cached: DatabaseSync | null = null;
 
+function duringNextBuild(): boolean {
+  return process.env.NEXT_PHASE === "phase-production-build";
+}
+
 function db(): DatabaseSync {
   if (cached) return cached;
-  mkdirSync(dirname(dbPath), { recursive: true });
-  const client = new DatabaseSync(dbPath);
+  const build = duringNextBuild();
+  if (!build) mkdirSync(dirname(dbPath), { recursive: true });
+  const client = new DatabaseSync(build ? ":memory:" : dbPath, {
+    timeout: 8000,
+  });
+  try {
+    client.exec("PRAGMA journal_mode = WAL;");
+  } catch {
+    // File may already be in use without WAL. Schema exec still proceeds.
+  }
+  try {
+    client.exec("PRAGMA busy_timeout = 8000;");
+  } catch {
+    // timeout constructor option already covers most locks.
+  }
   client.exec(`
     CREATE TABLE IF NOT EXISTS task_state (
       task_id TEXT PRIMARY KEY NOT NULL,

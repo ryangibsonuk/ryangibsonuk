@@ -1,5 +1,13 @@
+import { setDefaultResultOrder } from "node:dns";
 import { logSync, upsertNote } from "./db";
-import type { SyncResult } from "./google";
+import { githubErrorDetail, githubShouldRetry } from "./github-error";
+import type { SyncResult } from "./sync-result";
+
+try {
+  setDefaultResultOrder("ipv4first");
+} catch {
+  // Older Node or restricted DNS; fetch still proceeds.
+}
 
 type GithubEvent = {
   type?: string;
@@ -52,25 +60,39 @@ function eventUrl(event: GithubEvent): string | undefined {
   );
 }
 
+async function fetchGithubEvents(user: string, token?: string): Promise<GithubEvent[]> {
+  let last: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(
+        `https://api.github.com/users/${encodeURIComponent(user)}/events/public?per_page=30`,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            "User-Agent": "Gibson-HQ (ryangibsonuk)",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          signal: AbortSignal.timeout(15_000),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(`GitHub ${response.status}`);
+      }
+      return (await response.json()) as GithubEvent[];
+    } catch (error) {
+      last = error;
+      if (!githubShouldRetry(error) || attempt === 3) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+    }
+  }
+  throw last instanceof Error ? last : new Error("GitHub pull failed");
+}
+
 export async function pullGithubActivity(): Promise<SyncResult> {
   const user = githubUser();
   const token = process.env.GITHUB_TOKEN?.trim();
   try {
-    const response = await fetch(
-      `https://api.github.com/users/${encodeURIComponent(user)}/events/public?per_page=30`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          "User-Agent": "Gibson-HQ (ryangibsonuk)",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        signal: AbortSignal.timeout(20_000),
-      },
-    );
-    if (!response.ok) {
-      throw new Error(`GitHub ${response.status}`);
-    }
-    const events = (await response.json()) as GithubEvent[];
+    const events = await fetchGithubEvents(user, token);
     let added = 0;
     for (const event of events) {
       const title = eventTitle(event);
@@ -92,18 +114,7 @@ export async function pullGithubActivity(): Promise<SyncResult> {
     logSync("github", true, detail);
     return { channel: "github", ok: true, detail };
   } catch (error) {
-    const cause =
-      error instanceof Error && error.cause instanceof Error
-        ? error.cause.message
-        : "";
-    const timeout =
-      cause.includes("Timeout") ||
-      (error instanceof Error && error.name === "TimeoutError");
-    const detail = timeout
-      ? "GitHub is unreachable from this host. Cursor can still POST /api/ingest."
-      : error instanceof Error
-        ? error.message
-        : "GitHub pull failed";
+    const detail = githubErrorDetail(error);
     logSync("github", false, detail);
     return { channel: "github", ok: false, detail };
   }

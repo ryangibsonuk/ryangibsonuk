@@ -1,6 +1,6 @@
 import { parseChatgptStates } from "./chatgpt-parse";
 import { getSetting, logSync } from "./db";
-import type { SyncResult } from "./google";
+import { skipped, type SyncResult } from "./google";
 import type { Task } from "./types";
 
 function chatgptConfig() {
@@ -50,11 +50,7 @@ export async function pushChatgpt(
   result?: string,
 ): Promise<SyncResult> {
   if (!chatgptConfigured()) {
-    return {
-      channel: "chatgpt",
-      ok: false,
-      detail: "CHATGPT_APP_URL is not set.",
-    };
+    return skipped("chatgpt", "ChatGPT app URL is not set.");
   }
   try {
     await chatgptFetch("/api/integrations/tasks", {
@@ -87,13 +83,7 @@ export async function pullChatgpt(): Promise<{
   if (!chatgptConfigured()) {
     return {
       completions: [],
-      results: [
-        {
-          channel: "chatgpt",
-          ok: false,
-          detail: "CHATGPT_APP_URL is not set.",
-        },
-      ],
+      results: [skipped("chatgpt", "ChatGPT app URL is not set.")],
     };
   }
   try {

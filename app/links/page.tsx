@@ -3,6 +3,8 @@ import { LinkBoard } from "@/components/LinkBoard";
 import { getLinks, getProjects } from "@/lib/data";
 import { getIntegrationStatus } from "@/lib/status";
 
+export const dynamic = "force-dynamic";
+
 export default function LinksPage() {
   const projects = getProjects();
   return (

@@ -30,10 +30,10 @@ Fly.io with a volume at `/var/lib/hq` is the same app if you already use Fly.
 **Docker** (laptop, if you still want localhost):
 
 ```bash
-./scripts/docker-up.sh
+./scripts/docker-up.sh -d
 ```
 
-Or `docker compose --env-file .env.local up --build`. Open [http://localhost:3000](http://localhost:3000). The container binds `0.0.0.0:3000`.
+Or `docker compose --env-file .env.local up --build`. Open [http://localhost:3000](http://localhost:3000). The container binds `0.0.0.0:3000`. On Linux, `docker-up.sh` uses host networking so HQ can reach GitHub and Google; Docker’s default bridge often cannot open HTTPS from the container.
 
 Without Docker:
 

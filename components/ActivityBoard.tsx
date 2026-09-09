@@ -42,8 +42,10 @@ export function ActivityBoard({
       const payload = (await feed.json()) as { feed?: FeedItem[] };
       if (payload.feed) setRows(payload.feed);
       const notes = (synced.results ?? [])
-        .filter((item) =>
-          ["google-feed", "github", "chatgpt"].includes(item.channel),
+        .filter(
+          (item) =>
+            ["google-feed", "github", "chatgpt"].includes(item.channel) &&
+            !item.detail.startsWith("Skipped"),
         )
         .map((item) => item.detail)
         .join(" ");

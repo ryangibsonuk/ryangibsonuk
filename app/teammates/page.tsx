@@ -14,6 +14,8 @@ import {
 } from "@/lib/origin";
 import { getIntegrationStatus } from "@/lib/status";
 
+export const dynamic = "force-dynamic";
+
 export default async function TeammatesPage({
   searchParams,
 }: {

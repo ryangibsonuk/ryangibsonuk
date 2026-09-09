@@ -3,6 +3,8 @@ import { GrokBoard } from "@/components/GrokBoard";
 import { getProjects } from "@/lib/data";
 import { getIntegrationStatus } from "@/lib/status";
 
+export const dynamic = "force-dynamic";
+
 export default function GrokPage() {
   const projects = getProjects();
   const status = getIntegrationStatus();

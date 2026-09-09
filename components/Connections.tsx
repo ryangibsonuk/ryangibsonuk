@@ -68,12 +68,17 @@ export function Connections({
       const notes = (payload.results ?? [])
         .filter((item) => item.ok && !item.detail.startsWith("Skipped"))
         .map((item) => item.detail);
+      const waiting = (payload.results ?? [])
+        .filter((item) => item.detail.startsWith("Skipped"))
+        .map((item) => item.detail);
       setMessage(
         fails.length
           ? fails.map((item) => `${item.channel}: ${item.detail}`).join(" ")
           : notes.length
             ? notes.join(" ")
-            : "Nothing new. Allow Google with the Apps Script above, then Sync now.",
+            : waiting.length
+              ? waiting.join(" ")
+              : "Nothing new. Allow Google with the Apps Script above, then Sync now.",
       );
       if (payload.log) setEntries(payload.log);
     } catch (error) {

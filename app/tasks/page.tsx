@@ -3,6 +3,8 @@ import { TaskBoard } from "@/components/TaskBoard";
 import { getProjects, getSeedTasks } from "@/lib/data";
 import { getIntegrationStatus } from "@/lib/status";
 
+export const dynamic = "force-dynamic";
+
 export default function TasksPage() {
   const projects = getProjects();
   return (

@@ -4,6 +4,8 @@ import { getProjects } from "@/lib/data";
 import { buildFeed } from "@/lib/feed";
 import { getIntegrationStatus } from "@/lib/status";
 
+export const dynamic = "force-dynamic";
+
 export default function ActivityPage() {
   const projects = getProjects();
   const status = getIntegrationStatus();

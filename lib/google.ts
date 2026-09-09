@@ -6,6 +6,7 @@ import {
   saveOAuthToken,
 } from "./db";
 import { parseRecord } from "./records";
+import { skipped, type SyncResult } from "./sync-result";
 import type { Task } from "./types";
 
 const SCOPES = [
@@ -21,7 +22,8 @@ const HQ_COMPLETE = "HQ/Complete";
 const SYNC_SHEET_NAME = "Gibson HQ Sync";
 const HQ_TAB = "Gibson HQ";
 
-export type SyncResult = { channel: string; ok: boolean; detail: string };
+export type { SyncResult } from "./sync-result";
+export { skipped } from "./sync-result";
 
 export type CompletionSignal = {
   taskId: string;
@@ -247,7 +249,7 @@ export async function pushGmail(
     return { channel: "gmail", ok: true, detail: "No Gmail record on this task." };
   }
   if (!googleConnected()) {
-    return { channel: "gmail", ok: false, detail: "Google is not connected." };
+    return skipped("gmail", "Google is not connected.");
   }
   try {
     const hq = await ensureLabel(HQ_LABEL);
@@ -276,7 +278,7 @@ export async function pullGmail(tasks: Task[]): Promise<{
   if (!googleConnected()) {
     return {
       completions: [],
-      results: [{ channel: "gmail", ok: false, detail: "Google is not connected." }],
+      results: [skipped("gmail", "Google is not connected.")],
     };
   }
   const completions: CompletionSignal[] = [];
@@ -591,7 +593,7 @@ export async function pushDrive(
   actor: string,
 ): Promise<SyncResult> {
   if (!googleConnected()) {
-    return { channel: "drive", ok: false, detail: "Google is not connected." };
+    return skipped("drive", "Google is not connected.");
   }
   const wrote: string[] = [];
   try {
@@ -625,7 +627,7 @@ export async function pullDrive(tasks: Task[]): Promise<{
   if (!googleConnected()) {
     return {
       completions: [],
-      results: [{ channel: "drive", ok: false, detail: "Google is not connected." }],
+      results: [skipped("drive", "Google is not connected.")],
     };
   }
   try {

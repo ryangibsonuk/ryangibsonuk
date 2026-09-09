@@ -3,6 +3,8 @@ import { DecisionBoard } from "@/components/DecisionBoard";
 import { getDecisions, getProjects } from "@/lib/data";
 import { getIntegrationStatus } from "@/lib/status";
 
+export const dynamic = "force-dynamic";
+
 export default function DecisionsPage() {
   const projects = getProjects();
   return (

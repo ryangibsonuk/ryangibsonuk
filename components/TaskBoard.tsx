@@ -76,7 +76,10 @@ export function useLiveTasks(seed: Task[]) {
       setActivity((current) => [payload.activity, ...current]);
       const fails = (payload.sync ?? []).filter((item) => !item.ok);
       const wrote = (payload.sync ?? []).filter(
-        (item) => item.ok && !item.detail.startsWith("No "),
+        (item) =>
+          item.ok &&
+          !item.detail.startsWith("No ") &&
+          !item.detail.startsWith("Skipped"),
       );
       if (fails.length) {
         setSyncNote(fails.map((item) => `${item.channel}: ${item.detail}`).join(" "));

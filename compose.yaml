@@ -22,6 +22,7 @@ services:
       INGEST_SECRET: ${INGEST_SECRET:-}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       GITHUB_USERNAME: ${GITHUB_USERNAME:-ryangibsonuk}
+      NODE_OPTIONS: --dns-result-order=ipv4first
       GOOGLE_SCRIPT_URL: ${GOOGLE_SCRIPT_URL:-}
       GOOGLE_SCRIPT_TOKEN: ${GOOGLE_SCRIPT_TOKEN:-}
       HQ_DATA_DIR: /var/lib/hq
