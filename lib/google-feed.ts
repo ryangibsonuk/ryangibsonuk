@@ -35,7 +35,7 @@ export async function pullGoogleFeed(): Promise<SyncResult> {
     return {
       channel: "google-feed",
       ok: true,
-      detail: "Google activity script URL is not set.",
+      detail: "Skipped until you Allow Google with the Apps Script.",
     };
   }
   try {

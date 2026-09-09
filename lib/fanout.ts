@@ -1,9 +1,16 @@
-import { pullChatgpt, pushChatgpt } from "./chatgpt";
+import { chatgptConfigured, pullChatgpt, pushChatgpt } from "./chatgpt";
 import { findTask, getSeedTasks } from "./data";
 import { listTaskStates, setTaskCompletion } from "./db";
 import { pullGithubActivity } from "./github-feed";
 import { pullGoogleFeed } from "./google-feed";
-import { pullDrive, pullGmail, pushDrive, pushGmail, type SyncResult } from "./google";
+import {
+  googleConnected,
+  pullDrive,
+  pullGmail,
+  pushDrive,
+  pushGmail,
+  type SyncResult,
+} from "./google";
 import {
   pickLatestSignals,
   shouldApplySignal,
@@ -51,12 +58,19 @@ function liveCompleted(taskId: string): boolean {
   return applyTaskStates().find((task) => task.id === taskId)?.status === "Complete";
 }
 
+function idlePull(): {
+  completions: { taskId: string; completed: boolean; at: string }[];
+  results: SyncResult[];
+} {
+  return { completions: [], results: [] };
+}
+
 export async function inboundSync(actor = "Cursor") {
   const tasks = getSeedTasks();
   const [gmail, drive, chatgpt, googleFeed, github] = await Promise.all([
-    pullGmail(tasks),
-    pullDrive(tasks),
-    pullChatgpt(),
+    googleConnected() ? pullGmail(tasks) : idlePull(),
+    googleConnected() ? pullDrive(tasks) : idlePull(),
+    chatgptConfigured() ? pullChatgpt() : idlePull(),
     pullGoogleFeed(),
     pullGithubActivity(),
   ]);

@@ -64,14 +64,16 @@ export function Connections({
         error?: string;
       };
       if (!response.ok) throw new Error(payload.error || "Sync failed");
-      const applied = payload.applied?.length ?? 0;
       const fails = (payload.results ?? []).filter((item) => !item.ok);
+      const notes = (payload.results ?? [])
+        .filter((item) => item.ok && !item.detail.startsWith("Skipped"))
+        .map((item) => item.detail);
       setMessage(
-        applied
-          ? `Updated ${applied} task${applied === 1 ? "" : "s"} from Gmail, Drive or ChatGPT.`
-          : fails.length
-            ? fails.map((item) => `${item.channel}: ${item.detail}`).join(" ")
-            : "Nothing new to pull. Outbound writes still run when you complete a task.",
+        fails.length
+          ? fails.map((item) => `${item.channel}: ${item.detail}`).join(" ")
+          : notes.length
+            ? notes.join(" ")
+            : "Nothing new. Allow Google with the Apps Script above, then Sync now.",
       );
       if (payload.log) setEntries(payload.log);
     } catch (error) {
@@ -344,8 +346,9 @@ export function Connections({
       <Card>
         <Eyebrow>Pull now</Eyebrow>
         <p className="mt-3 text-sm leading-6 text-ink-soft">
-          Read Gmail labels, Drive status files and the ChatGPT app, then update
-          HQ. Completing a task here already pushes the other way.
+          Pull Google activity (after Allow), GitHub/Cursor events, and the
+          ChatGPT app if its URL is set. Gmail OAuth is only needed for
+          two-way task labels.
         </p>
         <button
           type="button"

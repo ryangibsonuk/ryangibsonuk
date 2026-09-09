@@ -61,9 +61,10 @@ export async function pullGithubActivity(): Promise<SyncResult> {
       {
         headers: {
           Accept: "application/vnd.github+json",
-          "User-Agent": "gibson-hq",
+          "User-Agent": "Gibson-HQ (ryangibsonuk)",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        signal: AbortSignal.timeout(20_000),
       },
     );
     if (!response.ok) {
@@ -91,8 +92,18 @@ export async function pullGithubActivity(): Promise<SyncResult> {
     logSync("github", true, detail);
     return { channel: "github", ok: true, detail };
   } catch (error) {
-    const detail =
-      error instanceof Error ? error.message : "GitHub pull failed";
+    const cause =
+      error instanceof Error && error.cause instanceof Error
+        ? error.cause.message
+        : "";
+    const timeout =
+      cause.includes("Timeout") ||
+      (error instanceof Error && error.name === "TimeoutError");
+    const detail = timeout
+      ? "GitHub is unreachable from this host. Cursor can still POST /api/ingest."
+      : error instanceof Error
+        ? error.message
+        : "GitHub pull failed";
     logSync("github", false, detail);
     return { channel: "github", ok: false, detail };
   }
