@@ -1,0 +1,46 @@
+[
+  {
+    "date": "8 Sep 2026",
+    "project": "Property portfolio",
+    "action": "Filed Ivy Lane insurance records",
+    "actor": "ChatGPT",
+    "result": "Five Geo and Everywhen PDFs saved in the 2026-2027 insurance folder.",
+    "href": "https://drive.google.com/drive/folders/1-_p6OFMkz8ZYSetq9q_-9pwFlj4hojdm"
+  },
+  {
+    "date": "8 Sep 2026",
+    "project": "Property portfolio",
+    "action": "Corrected the insurance interpretation",
+    "actor": "ChatGPT",
+    "result": "Confirmed that Ivy Lane's building is covered through the service-charge block policy."
+  },
+  {
+    "date": "8 Sep 2026",
+    "project": "Business development",
+    "action": "Completed FinanceAds questionnaire",
+    "actor": "Ryan",
+    "result": "Questionnaire completed; no further action recorded."
+  },
+  {
+    "date": "7 Sep 2026",
+    "project": "Personal and family admin",
+    "action": "Installed Starlink routers",
+    "actor": "Ryan",
+    "result": "Both routers delivered, installed and treated as resolved."
+  },
+  {
+    "date": "7 Sep 2026",
+    "project": "HelpingWithMath.com",
+    "action": "Prepared Michelle reply",
+    "actor": "ChatGPT",
+    "result": "Supportive unsent reply drafted in the existing Gmail thread.",
+    "href": "https://mail.google.com/mail/#all/1a07cd353cbe15eb"
+  },
+  {
+    "date": "31 Aug 2026",
+    "project": "Retirement Journey Hub",
+    "action": "Established regression monitoring",
+    "actor": "ChatGPT",
+    "result": "Monthly technical and UK-rule regression check is active."
+  }
+]

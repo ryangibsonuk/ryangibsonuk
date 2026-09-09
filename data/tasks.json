@@ -1,0 +1,146 @@
+[
+  {
+    "id": "zava",
+    "title": "Read the new ZAVA patient message",
+    "project": "Personal and family admin",
+    "status": "Needs Ryan",
+    "priority": "High",
+    "detail": "The medical content is only available after signing in.",
+    "href": "https://mail.google.com/mail/#all/1a080ae66ae012dc"
+  },
+  {
+    "id": "namecheap",
+    "title": "Restore automatic hosting backups",
+    "project": "HelpingWithMath.com",
+    "status": "Needs Ryan",
+    "priority": "High",
+    "detail": "The Namecheap account exceeded its inode allowance and was excluded from automatic backups.",
+    "href": "https://mail.google.com/mail/#all/1a0802adec68e8a6"
+  },
+  {
+    "id": "jennifer",
+    "title": "Review the overdue invoice follow-up",
+    "project": "Attest",
+    "status": "Needs Ryan",
+    "priority": "High",
+    "detail": "Invoice 000602 was due on 3 July. An unsent Gmail draft already exists.",
+    "href": "https://mail.google.com/mail/#all/1a031bca8c9fcc10"
+  },
+  {
+    "id": "dipesh",
+    "title": "Choose a virtual-survey appointment",
+    "project": "Property portfolio",
+    "status": "Needs Ryan",
+    "priority": "Medium",
+    "detail": "Dipesh offered appointment times from 9 September onwards.",
+    "href": "https://mail.google.com/mail/#all/1a07c1b699287605"
+  },
+  {
+    "id": "george",
+    "title": "Collect the George order",
+    "project": "Personal and family admin",
+    "status": "Scheduled",
+    "priority": "Medium",
+    "due": "17 Sep 2026",
+    "detail": "The order will be returned if it is not collected by the deadline.",
+    "href": "https://mail.google.com/mail/#all/1a07c862d283ef00"
+  },
+  {
+    "id": "school",
+    "title": "Prepare Matilda's secondary-school decision",
+    "project": "SchoolChecker.uk",
+    "status": "Ready",
+    "priority": "High",
+    "due": "Oct 2026",
+    "detail": "Compare realistic local options and define the academic and sporting support plan."
+  },
+  {
+    "id": "rc-weekly",
+    "title": "Publish the next weekly retirement calculator or guide",
+    "project": "RetirementCalculators.uk",
+    "status": "Scheduled",
+    "priority": "High",
+    "detail": "Create one UK-specific, evidence-led item each week and check the existing library before choosing the topic.",
+    "href": "https://retirementcalculators.uk/"
+  },
+  {
+    "id": "rc-regression",
+    "title": "Run the monthly calculator and UK-rules regression check",
+    "project": "Retirement Journey Hub",
+    "status": "Scheduled",
+    "priority": "Medium",
+    "detail": "Use the established regression pack and record technical or UK-rule changes.",
+    "href": "https://retirementcalculators.uk/plan-hub/"
+  },
+  {
+    "id": "psc-weekly",
+    "title": "Publish the next weekly public-sector guide",
+    "project": "PublicSectorCalculators.co.uk",
+    "status": "Scheduled",
+    "priority": "High",
+    "detail": "Continue the evidence-led guide programme and link each guide to its relevant calculator.",
+    "href": "https://publicsectorcalculators.co.uk/"
+  },
+  {
+    "id": "psc-404",
+    "title": "Resolve Search Console 404 pages",
+    "project": "PublicSectorCalculators.co.uk",
+    "status": "Ready",
+    "priority": "High",
+    "detail": "Review the reported URLs and use redirects or removals only where appropriate.",
+    "href": "https://mail.google.com/mail/#all/1a078c5460330e49"
+  },
+  {
+    "id": "calder-security-sprint",
+    "title": "Start the Calder Security P1 content sprint",
+    "project": "Calder Security",
+    "status": "Ready",
+    "priority": "High",
+    "detail": "Begin with current buyer, compliance and troubleshooting topics in the ranked tracker.",
+    "href": "https://docs.google.com/spreadsheets/d/1XPkpnMjhuYMqD88NTf6vXzhBVG83prSsiXeZLl9Q2ws/edit"
+  },
+  {
+    "id": "calder-security-tools",
+    "title": "Prioritise the first Calder Security calculator sprint",
+    "project": "Calder Security",
+    "status": "Ready",
+    "priority": "Medium",
+    "detail": "Initial candidates are CCTV storage, PSTN compatibility, access-control cost per door and safe rating.",
+    "href": "https://docs.google.com/spreadsheets/d/1XPkpnMjhuYMqD88NTf6vXzhBVG83prSsiXeZLl9Q2ws/edit"
+  },
+  {
+    "id": "calder-electrical-monthly",
+    "title": "Prepare the next Calder Electrical content brief",
+    "project": "Calder Electrical",
+    "status": "Scheduled",
+    "priority": "Medium",
+    "detail": "Rank the most useful content work and preserve the site's internal-linking rules."
+  },
+  {
+    "id": "sherburn-monthly",
+    "title": "Prepare the next Sherburn Aero Club content brief",
+    "project": "Sherburn Aero Club",
+    "status": "Scheduled",
+    "priority": "Medium",
+    "detail": "Rank the most useful aviation content work and preserve the site's internal-linking rules.",
+    "href": "https://docs.google.com/spreadsheets/d/1Dgiwi41HB92EJcAUKuXmS5zHGBLteqvun2DxklOGG7Q/edit"
+  },
+  {
+    "id": "ivy-docs",
+    "title": "File Ivy Lane final policy documents",
+    "project": "Property portfolio",
+    "status": "Complete",
+    "priority": "Medium",
+    "due": "8 Sep 2026",
+    "detail": "Five final documents filed and verified in the 2026-2027 insurance archive.",
+    "href": "https://drive.google.com/drive/folders/1-_p6OFMkz8ZYSetq9q_-9pwFlj4hojdm"
+  },
+  {
+    "id": "routers",
+    "title": "Install both Starlink routers",
+    "project": "Personal and family admin",
+    "status": "Complete",
+    "priority": "Low",
+    "detail": "Ryan confirmed both routers are delivered and installed."
+  }
+]

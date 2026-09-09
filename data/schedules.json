@@ -1,0 +1,50 @@
+[
+  {
+    "id": "rc-weekly",
+    "title": "Publish the next weekly retirement calculator or guide",
+    "project": "RetirementCalculators.uk",
+    "cadence": "Weekly",
+    "status": "Scheduled",
+    "href": "https://retirementcalculators.uk/"
+  },
+  {
+    "id": "rc-regression",
+    "title": "Run the monthly calculator and UK-rules regression check",
+    "project": "Retirement Journey Hub",
+    "cadence": "Monthly",
+    "status": "Scheduled",
+    "href": "https://retirementcalculators.uk/plan-hub/"
+  },
+  {
+    "id": "psc-weekly",
+    "title": "Publish the next weekly public-sector guide",
+    "project": "PublicSectorCalculators.co.uk",
+    "cadence": "Weekly",
+    "status": "Scheduled",
+    "href": "https://publicsectorcalculators.co.uk/"
+  },
+  {
+    "id": "calder-security-sprint",
+    "title": "Start the Calder Security P1 content sprint",
+    "project": "Calder Security",
+    "cadence": "Sprint",
+    "status": "Ready",
+    "href": "https://docs.google.com/spreadsheets/d/1XPkpnMjhuYMqD88NTf6vXzhBVG83prSsiXeZLl9Q2ws/edit"
+  },
+  {
+    "id": "calder-electrical-monthly",
+    "title": "Prepare the next Calder Electrical content brief",
+    "project": "Calder Electrical",
+    "cadence": "Monthly",
+    "status": "Scheduled",
+    "href": null
+  },
+  {
+    "id": "sherburn-monthly",
+    "title": "Prepare the next Sherburn Aero Club content brief",
+    "project": "Sherburn Aero Club",
+    "cadence": "Monthly",
+    "status": "Scheduled",
+    "href": "https://docs.google.com/spreadsheets/d/1Dgiwi41HB92EJcAUKuXmS5zHGBLteqvun2DxklOGG7Q/edit"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "date": "8 Sep 2026",
+    "project": "Property portfolio",
+    "title": "Ivy Lane uses block buildings insurance",
+    "detail": "The structure is insured through the service charge. The separate Geo policy is leaseholder cover, not standalone buildings insurance.",
+    "state": "Confirmed"
+  },
+  {
+    "date": "8 Sep 2026",
+    "project": "Property portfolio",
+    "title": "Blackthorn needs separate buildings cover",
+    "detail": "Each flat owner is responsible for arranging the building insurance for that property.",
+    "state": "Confirmed"
+  },
+  {
+    "date": "7 Sep 2026",
+    "project": "Personal and family admin",
+    "title": "Do not chase Andrew or Carl",
+    "detail": "Andrew Armitage and Carl Davies are parked until Ryan decides otherwise.",
+    "state": "Confirmed"
+  },
+  {
+    "date": "7 Sep 2026",
+    "project": "Personal and family admin",
+    "title": "Inbox should stay deliberately quiet",
+    "detail": "Routine and promotional email is marked read. Genuine decisions, deadlines and material risks remain unread and starred.",
+    "state": "Working rule"
+  },
+  {
+    "date": "31 Aug 2026",
+    "project": "RetirementCalculators.uk",
+    "title": "Use Ryan's financial-coach voice",
+    "detail": "British English, conversational and practical. Avoid em dashes, stiff phrasing and generic marketing language.",
+    "state": "Working rule"
+  },
+  {
+    "date": "29 Aug 2026",
+    "project": "FamilyCycling",
+    "title": "Protect family time and flexibility",
+    "detail": "Do not manufacture work simply to keep a project moving. Resume content when there is useful capacity.",
+    "state": "Working rule"
+  }
+]

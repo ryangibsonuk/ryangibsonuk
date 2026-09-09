@@ -1,0 +1,181 @@
+[
+  {
+    "id": "retirement-calculators",
+    "name": "RetirementCalculators.uk",
+    "area": "Digital products",
+    "status": "Active",
+    "summary": "UK retirement decision tools and supporting resources, written in a practical financial-coach voice.",
+    "next": "Continue the weekly evidence-led article and calculator programme without duplicating existing pages.",
+    "accent": "#17b897",
+    "links": [
+      {
+        "label": "Live website",
+        "href": "https://retirementcalculators.uk/"
+      }
+    ]
+  },
+  {
+    "id": "journey-hub",
+    "name": "Retirement Journey Hub",
+    "area": "Digital products",
+    "status": "Monitor",
+    "summary": "Paid planning hub covering saved plans, yearly income, tax, pots, spending and what-if scenarios.",
+    "next": "Use the established regression pack for future releases and monitor real-user journeys.",
+    "accent": "#8b7cf6",
+    "links": [
+      {
+        "label": "Open the hub",
+        "href": "https://retirementcalculators.uk/plan-hub/"
+      }
+    ]
+  },
+  {
+    "id": "public-sector",
+    "name": "PublicSectorCalculators.co.uk",
+    "area": "Digital products",
+    "status": "Active",
+    "summary": "UK employment, pay and pension calculators for public-sector workers.",
+    "next": "Resolve Search Console 404s and continue the weekly guide programme.",
+    "accent": "#2f87ff",
+    "links": [
+      {
+        "label": "Live website",
+        "href": "https://publicsectorcalculators.co.uk/"
+      }
+    ]
+  },
+  {
+    "id": "helping-with-math",
+    "name": "HelpingWithMath.com",
+    "area": "Education",
+    "status": "Active",
+    "summary": "Maths worksheets, memberships and calculator development, supported by Michelle.",
+    "next": "Clear customer replies and continue the Ratios and Proportions calculator cluster.",
+    "accent": "#e79a3b",
+    "links": [
+      {
+        "label": "Live website",
+        "href": "https://helpingwithmath.com/"
+      }
+    ]
+  },
+  {
+    "id": "school-checker",
+    "name": "SchoolChecker.uk",
+    "area": "Education",
+    "status": "Active",
+    "summary": "School comparison product with an immediate real-world use in Matilda's secondary-school decision.",
+    "next": "Keep local school data accurate and turn the comparison journey into a useful public experience.",
+    "accent": "#e76f82",
+    "links": []
+  },
+  {
+    "id": "family-cycling",
+    "name": "FamilyCycling",
+    "area": "Content",
+    "status": "Parked",
+    "summary": "Family cycling, active travel, Yorkshire days out and practical first-hand family content.",
+    "next": "Resume only when there is protected capacity for useful, experience-led work.",
+    "accent": "#65a96f",
+    "links": [
+      {
+        "label": "Content strategy",
+        "href": "https://docs.google.com/spreadsheets/d/1u7pfj0t5WoWdYtwjmAtifIxtm6lBos1hBs2Tv-iYXXs/edit"
+      }
+    ]
+  },
+  {
+    "id": "attest",
+    "name": "Attest",
+    "area": "Retained client",
+    "status": "Active",
+    "summary": "Retained marketing and measurement support, including invoicing and implementation decisions.",
+    "next": "Resolve the overdue invoice and review the Enhanced Conversions implementation proposal.",
+    "accent": "#4db3c7",
+    "links": []
+  },
+  {
+    "id": "calder-security",
+    "name": "Calder Security",
+    "area": "Retained client",
+    "status": "Active",
+    "summary": "Search-led security content and calculator opportunities, backed by a ranked 50-brief and 20-tool tracker.",
+    "next": "Start the P1 content sprint and prioritise the first calculator sprint.",
+    "accent": "#2f87ff",
+    "links": [
+      {
+        "label": "Content and tools tracker",
+        "href": "https://docs.google.com/spreadsheets/d/1XPkpnMjhuYMqD88NTf6vXzhBVG83prSsiXeZLl9Q2ws/edit"
+      },
+      {
+        "label": "Historic content plan",
+        "href": "https://docs.google.com/spreadsheets/d/17fFsa5o60vIzgqdyD0GaWGCLTeCNC96IRo7vGj0iWJM/edit"
+      }
+    ]
+  },
+  {
+    "id": "calder-electrical",
+    "name": "Calder Electrical",
+    "area": "Retained client",
+    "status": "Active",
+    "summary": "Monthly electrical-services content planning and retained consultancy.",
+    "next": "Prepare the ranked monthly content brief and preserve the site's internal-linking rules.",
+    "accent": "#e79a3b",
+    "links": []
+  },
+  {
+    "id": "sherburn-aero",
+    "name": "Sherburn Aero Club",
+    "area": "Retained client",
+    "status": "Active",
+    "summary": "Monthly aviation content planning and retained consultancy.",
+    "next": "Prepare the ranked monthly content brief using the established strategy.",
+    "accent": "#8b7cf6",
+    "links": [
+      {
+        "label": "Content strategy",
+        "href": "https://docs.google.com/spreadsheets/d/1Dgiwi41HB92EJcAUKuXmS5zHGBLteqvun2DxklOGG7Q/edit"
+      }
+    ]
+  },
+  {
+    "id": "property",
+    "name": "Property portfolio",
+    "area": "Property",
+    "status": "Active",
+    "summary": "Four-property limited-company portfolio with insurance, tenancy, mortgage and compliance records.",
+    "next": "Keep property facts separate, file final documents and track renewal dates and cover decisions.",
+    "accent": "#d4a84f",
+    "links": [
+      {
+        "label": "Insurance archive",
+        "href": "https://drive.google.com/drive/folders/1NKmfX04OhZH-O2cRXDPKjiUxFrQU8u9g"
+      }
+    ]
+  },
+  {
+    "id": "personal-admin",
+    "name": "Personal and family admin",
+    "area": "Home",
+    "status": "Active",
+    "summary": "Family commitments, household actions, purchases, health messages and important account notices.",
+    "next": "Surface only genuine decisions, deadlines and risks while keeping routine notifications out of view.",
+    "accent": "#ec7e47",
+    "links": []
+  },
+  {
+    "id": "finance",
+    "name": "Finance and retirement planning",
+    "area": "Finance",
+    "status": "Monitor",
+    "summary": "Household cash flow, portfolio, property performance and scenario planning.",
+    "next": "Keep dashboard inputs current and treat modelled outcomes as planning aids rather than promises.",
+    "accent": "#20a67a",
+    "links": [
+      {
+        "label": "Financial dashboard",
+        "href": "https://docs.google.com/spreadsheets/d/1Wq6Q_Nk9HlPOvWdUCxVysYWPCWTv1S_278vbqqF6wg8"
+      }
+    ]
+  }
+]
