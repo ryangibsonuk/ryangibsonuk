@@ -18,6 +18,14 @@ export function pinConfigured(): string {
   return process.env.DASHBOARD_PIN?.trim() ?? "";
 }
 
+export function pinMatches(candidate: string | undefined, pin: string): boolean {
+  if (!candidate || !pin) return false;
+  const a = Buffer.from(candidate);
+  const b = Buffer.from(pin);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
+
 export function isUnlocked(request: NextRequest): boolean {
   const pin = pinConfigured();
   if (!pin) return true;

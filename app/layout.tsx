@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Figtree, Fraunces } from "next/font/google";
 import "./globals.css";
 
@@ -16,6 +16,18 @@ export const metadata: Metadata = {
   title: "Control Centre",
   description:
     "Ryan Gibson’s personal control centre for projects, tasks, Cursor and Grok.",
+  appleWebApp: {
+    capable: true,
+    title: "Gibson HQ",
+    statusBarStyle: "default",
+  },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#f1ebe0",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

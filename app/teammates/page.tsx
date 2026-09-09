@@ -56,7 +56,8 @@ export default async function TeammatesPage({
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
           This is the page for Gmail, Drive and ChatGPT. Paste Google OAuth
           details and the published ChatGPT origin here, then Connect Google.
-          Unlock with your PIN. Assistants use the API key, not the PIN.
+          Unlock with your passcode. Assistants use the API key, not the
+          passcode.
         </p>
       </header>
       <div className="mb-4 grid gap-4">

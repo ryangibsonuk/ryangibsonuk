@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { getSeedTasks } from "./data";
 import type { TaskActivity, TaskState } from "./types";
+import type { UnlockGuardRow } from "./unlock-guard";
 
 const dataDir =
   process.env.HQ_DATA_DIR?.trim() || join(process.cwd(), "data");
@@ -58,6 +59,12 @@ function db(): DatabaseSync {
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY NOT NULL,
       value TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS unlock_guard (
+      key TEXT PRIMARY KEY NOT NULL,
+      fail_count INTEGER NOT NULL DEFAULT 0,
+      window_start INTEGER NOT NULL,
+      locked_until INTEGER NOT NULL DEFAULT 0
     );
   `);
   seedCompleted(client);
@@ -315,4 +322,37 @@ export function setSetting(key: string, value: string) {
 
 export function deleteSetting(key: string) {
   db().prepare("DELETE FROM settings WHERE key = ?").run(key);
+}
+
+export function getUnlockGuard(key: string): UnlockGuardRow | null {
+  const row = db()
+    .prepare(
+      "SELECT fail_count, window_start, locked_until FROM unlock_guard WHERE key = ?",
+    )
+    .get(key) as
+    | { fail_count: number; window_start: number; locked_until: number }
+    | undefined;
+  if (!row) return null;
+  return {
+    failCount: Number(row.fail_count),
+    windowStart: Number(row.window_start),
+    lockedUntil: Number(row.locked_until),
+  };
+}
+
+export function saveUnlockGuard(key: string, row: UnlockGuardRow) {
+  db()
+    .prepare(
+      `INSERT INTO unlock_guard (key, fail_count, window_start, locked_until)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(key) DO UPDATE SET
+         fail_count = excluded.fail_count,
+         window_start = excluded.window_start,
+         locked_until = excluded.locked_until`,
+    )
+    .run(key, row.failCount, row.windowStart, row.lockedUntil);
+}
+
+export function clearUnlockGuard(key: string) {
+  db().prepare("DELETE FROM unlock_guard WHERE key = ?").run(key);
 }

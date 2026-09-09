@@ -8,9 +8,26 @@ This repository is **Gibson HQ / Ryan Control Centre**, the git-backed version o
 cp .env.example .env.local
 ```
 
-Set `DASHBOARD_PIN` in `.env.local`. Assistants keep using `CONTROL_CENTRE_API_KEY` on the integration routes.
+Set `DASHBOARD_PIN` in `.env.local` (the passcode on `/unlock`). Assistants keep using `CONTROL_CENTRE_API_KEY` on the integration routes.
 
-**Docker** (recommended if `npm run dev` / localhost forwarding fails):
+## Live site (phone and desktop)
+
+GitHub Pages cannot host this control panel. Pages only serves static files. Gibson HQ is a Node app with a passcode cookie and SQLite, so ticks would not survive and a Pages passcode would sit in the JavaScript.
+
+Use the Docker image on a host with a disk. This repo includes `render.yaml` for [Render](https://render.com):
+
+1. Open [Render Blueprints](https://dashboard.render.com/blueprints) and connect `ryangibsonuk/ryangibsonuk`.
+2. Until this branch is on `main`, set the service branch to the HQ branch you deployed from.
+3. Set **DASHBOARD_PIN** to your passcode (same value as `.env.local`). Leave it out of git.
+4. Set **CONTROL_CENTRE_API_KEY** if ChatGPT, Cursor or Grok should call in.
+5. Deploy. Render gives you an `https://….onrender.com` URL. Open that on your phone and computer, enter the passcode, use Control panel.
+6. After it is live, add `{that-origin}/api/auth/google/callback` to the Google OAuth client.
+
+SQLite lives on a 1 GB disk at `/var/lib/hq`, so task ticks survive deploys. Render’s starter plan is required for a persistent disk. Eight wrong passcodes from one address lock unlock for 15 minutes.
+
+Fly.io with a volume at `/var/lib/hq` is the same app if you already use Fly.
+
+**Docker** (laptop, if you still want localhost):
 
 ```bash
 ./scripts/docker-up.sh

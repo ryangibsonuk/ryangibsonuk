@@ -19,7 +19,19 @@ export default function UnlockPage() {
       body: JSON.stringify({ pin }),
     });
     if (!response.ok) {
-      setError("That PIN is not right.");
+      let message = "That passcode is not right.";
+      try {
+        const body = (await response.json()) as {
+          error?: string;
+        };
+        if (response.status === 429 && body.error) message = body.error;
+        else if (response.status === 503 && body.error) message = body.error;
+      } catch {
+        if (response.status === 429) {
+          message = "Too many attempts. Try again in a few minutes.";
+        }
+      }
+      setError(message);
       setBusy(false);
       return;
     }
@@ -34,15 +46,22 @@ export default function UnlockPage() {
         Gibson HQ
       </p>
       <h1 className="display mt-3 text-4xl">Unlock</h1>
+      <p className="mt-3 max-w-sm text-center text-sm leading-6 text-ink-soft">
+        Same passcode on your phone and computer. It stays unlocked for 30 days
+        on this browser.
+      </p>
       <form onSubmit={submit} className="mt-8 w-full max-w-sm">
         <label className="block">
-          <span className="mb-2 block text-sm text-ink-soft">PIN</span>
+          <span className="mb-2 block text-sm text-ink-soft">Passcode</span>
           <input
             type="password"
+            name="passcode"
+            autoComplete="current-password"
+            enterKeyHint="go"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
             autoFocus
-            className="w-full rounded-full border border-line bg-white/80 px-4 py-3"
+            className="w-full rounded-full border border-line bg-white/80 px-4 py-3 text-base"
           />
         </label>
         {error ? <p className="mt-3 text-sm text-danger">{error}</p> : null}

@@ -60,3 +60,5 @@ cp .env.example .env.local
 ```
 
 Without Docker: `npm install` then `npm run dev`.
+
+Live hosting is Docker on Render (`render.yaml`), not GitHub Pages. Production requires `DASHBOARD_PIN`. SQLite must sit on a persistent disk (`HQ_DATA_DIR=/var/lib/hq`).
