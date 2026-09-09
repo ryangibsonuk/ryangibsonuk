@@ -6,6 +6,7 @@ import {
   getSchedules,
   getSeedTasks,
 } from "@/lib/data";
+import { buildFeed } from "@/lib/feed";
 import { getIntegrationStatus } from "@/lib/status";
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
         changelog={getChangelog()}
         schedules={getSchedules()}
         status={status}
+        feed={buildFeed(8)}
       />
     </AppShell>
   );

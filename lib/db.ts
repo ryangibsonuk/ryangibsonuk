@@ -224,6 +224,70 @@ export function appendNote(input: {
   return { id: Number(info.lastInsertRowid), createdAt, ...input };
 }
 
+export type Note = {
+  id: number;
+  source: string;
+  project: string | null;
+  title: string;
+  detail: string | null;
+  url: string | null;
+  createdAt: string;
+};
+
+function asNote(row: Record<string, unknown>): Note {
+  return {
+    id: Number(row.id),
+    source: String(row.source),
+    project: (row.project as string | null) ?? null,
+    title: String(row.title),
+    detail: (row.detail as string | null) ?? null,
+    url: (row.url as string | null) ?? null,
+    createdAt: String(row.created_at),
+  };
+}
+
+export function listNotes(limit = 80): Note[] {
+  const rows = db()
+    .prepare(
+      "SELECT * FROM notes ORDER BY created_at DESC, id DESC LIMIT ?",
+    )
+    .all(limit) as Record<string, unknown>[];
+  return rows.map(asNote);
+}
+
+export function upsertNote(input: {
+  source: string;
+  project?: string;
+  title: string;
+  detail?: string;
+  url?: string;
+  createdAt?: string;
+}): boolean {
+  const createdAt = input.createdAt?.trim() || new Date().toISOString();
+  const url = input.url?.trim() || null;
+  const client = db();
+  if (url) {
+    const existing = client
+      .prepare("SELECT id FROM notes WHERE url = ? AND title = ?")
+      .get(url, input.title) as { id: number } | undefined;
+    if (existing) return false;
+  }
+  client
+    .prepare(
+      `INSERT INTO notes (source, project, title, detail, url, created_at)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .run(
+      input.source,
+      input.project ?? null,
+      input.title,
+      input.detail ?? null,
+      url,
+      createdAt,
+    );
+  return true;
+}
+
 export type OAuthToken = {
   provider: string;
   accessToken: string | null;

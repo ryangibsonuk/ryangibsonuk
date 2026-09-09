@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { chatgptStatus } from "@/lib/chatgpt";
 import { deleteSetting, setSetting } from "@/lib/db";
+import { googleFeedConfigured } from "@/lib/google-feed";
 import { googleStatus } from "@/lib/google";
 
 export const runtime = "nodejs";
@@ -17,6 +18,8 @@ export async function POST(request: NextRequest) {
     chatgptAppUrl?: string;
     googleClientId?: string;
     googleClientSecret?: string;
+    googleScriptUrl?: string;
+    googleScriptToken?: string;
   };
 
   if ("chatgptAppUrl" in payload) {
@@ -39,10 +42,21 @@ export async function POST(request: NextRequest) {
     payload.googleClientSecret,
     "googleClientSecret" in payload,
   );
+  saveOrClear(
+    "google_script_url",
+    payload.googleScriptUrl,
+    "googleScriptUrl" in payload,
+  );
+  saveOrClear(
+    "google_script_token",
+    payload.googleScriptToken,
+    "googleScriptToken" in payload,
+  );
 
   return NextResponse.json({
     ok: true,
     chatgpt: chatgptStatus(),
     google: googleStatus(),
+    googleFeed: googleFeedConfigured(),
   });
 }

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ChangelogEntry, IntegrationStatus, Project, Schedule, Task } from "@/lib/types";
-import { greeting } from "@/lib/format";
+import type { FeedItem } from "@/lib/feed";
+import { greeting, sourceLabel } from "@/lib/format";
 import { Card, Eyebrow, Pill, SearchField } from "./ui";
 import { TaskCard } from "./TaskCard";
 import { useLiveTasks } from "./TaskBoard";
@@ -20,12 +21,14 @@ export function TodayBoard({
   changelog,
   schedules,
   status,
+  feed,
 }: {
   projects: Project[];
   seedTasks: Task[];
   changelog: ChangelogEntry[];
   schedules: Schedule[];
   status: IntegrationStatus;
+  feed: FeedItem[];
 }) {
   const { tasks, activity, saving, error, syncNote, toggle } = useLiveTasks(seedTasks);
   const [query, setQuery] = useState("");
@@ -73,8 +76,8 @@ export function TodayBoard({
         </p>
         <h1 className="display mt-2 text-4xl leading-none sm:text-5xl">{hello}</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          Completing a task writes to HQ, then to Gmail, Drive and the ChatGPT
-          Control Centre when those are connected.
+          Recent Gmail, Drive, Calendar, Cursor and assistant events land on
+          Activity after you Allow Google on Control panel.
         </p>
       </header>
 
@@ -91,23 +94,49 @@ export function TodayBoard({
           {complete}/{tasks.length} complete · {pct}%
         </Pill>
         <Pill>Grok {status.grok ? "chat on" : "needs key"}</Pill>
-        <Pill>Google {status.google ? status.googleEmail || "on" : "off"}</Pill>
-        <Pill>ChatGPT {status.chatgpt ? "url set" : "needs URL"}</Pill>
+        <Pill>
+          Google {status.googleFeed ? "allowed" : status.google ? status.googleEmail || "oauth" : "needs Allow"}
+        </Pill>
+        <Pill>ChatGPT {status.chatgpt ? "url set" : "ingest"}</Pill>
       </div>
 
       <Card>
         <Eyebrow>Control panel</Eyebrow>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
-          Gmail, Drive and the published ChatGPT app are wired from Control
-          panel in the left nav. Paste the Google OAuth client there, then
-          Connect Google. ChatGPT needs the published app origin, not a chat
-          link.
+          Allow Google with an Apps Script (one Allow click). Cursor shows up
+          from GitHub. ChatGPT and Grok Bot post to the ingest URL.
         </p>
         <Link
           href="/teammates"
           className="mt-4 inline-flex rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper"
         >
-          Open control panel
+          Allow access
+        </Link>
+      </Card>
+
+      <Card>
+        <Eyebrow>Latest</Eyebrow>
+        {feed.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">
+            Empty until Google is Allowed and you hit Refresh on Activity.
+          </p>
+        ) : (
+          <ol className="mt-4 divide-y divide-line">
+            {feed.map((entry) => (
+              <li key={entry.id} className="py-3">
+                <p className="text-xs uppercase tracking-[0.14em] text-muted">
+                  {sourceLabel(entry.source)}
+                </p>
+                <p className="mt-1 text-sm font-medium">{entry.title}</p>
+              </li>
+            ))}
+          </ol>
+        )}
+        <Link
+          href="/activity"
+          className="mt-4 inline-flex text-sm text-copper hover:underline"
+        >
+          Open activity
         </Link>
       </Card>
 

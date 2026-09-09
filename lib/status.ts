@@ -1,7 +1,8 @@
-import type { IntegrationStatus } from "./types";
 import { chatgptStatus } from "./chatgpt";
+import { googleFeedConfigured } from "./google-feed";
 import { googleStatus } from "./google";
 import { grokConfig } from "./grok";
+import type { IntegrationStatus } from "./types";
 
 export function getIntegrationStatus(): IntegrationStatus {
   const { configured, model } = grokConfig();
@@ -18,6 +19,7 @@ export function getIntegrationStatus(): IntegrationStatus {
     google: google.connected,
     googleEmail: google.email,
     googleConfigured: google.configured,
+    googleFeed: googleFeedConfigured(),
     chatgpt: chatgpt.configured,
   };
 }

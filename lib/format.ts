@@ -4,6 +4,9 @@ const SOURCE_LABEL: Record<string, string> = {
   grok: "Grok",
   "grok-bot": "Grok Bot",
   github: "GitHub",
+  gmail: "Gmail",
+  drive: "Drive",
+  calendar: "Calendar",
   life: "Life",
   manual: "Note",
 };

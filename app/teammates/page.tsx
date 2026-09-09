@@ -1,3 +1,4 @@
+import { AllowAccess } from "@/components/AllowAccess";
 import { AppShell } from "@/components/AppShell";
 import { Connections } from "@/components/Connections";
 import { Card, Eyebrow, Pill } from "@/components/ui";
@@ -5,6 +6,7 @@ import { chatgptStatus } from "@/lib/chatgpt";
 import { getProjects } from "@/lib/data";
 import { listSyncLog } from "@/lib/db";
 import { googleClient } from "@/lib/google";
+import { googleFeedUrl } from "@/lib/google-feed";
 import {
   googleCallbackUrl,
   oauthRedirectWarning,
@@ -21,7 +23,8 @@ export default async function TeammatesPage({
   const status = getIntegrationStatus();
   const chatgpt = chatgptStatus();
   const params = await searchParams;
-  const callbackUrl = googleCallbackUrl(await publicOrigin());
+  const origin = await publicOrigin();
+  const callbackUrl = googleCallbackUrl(origin);
   const googleRedirectNote = oauthRedirectWarning(callbackUrl);
 
   const mates = [
@@ -59,10 +62,8 @@ export default async function TeammatesPage({
         </p>
         <h1 className="display mt-2 text-4xl">Control panel</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          This is the page for Gmail, Drive and ChatGPT. Paste Google OAuth
-          details and the published ChatGPT origin here, then Connect Google.
-          Unlock with your passcode. Assistants use the API key, not the
-          passcode.
+          This is where you Allow Google (Apps Script) and point ChatGPT or
+          Grok Bot at the ingest URL. Two-way Gmail labels are optional.
         </p>
       </header>
       <div className="mb-4 grid gap-4">
@@ -79,6 +80,11 @@ export default async function TeammatesPage({
           </Card>
         ))}
       </div>
+      <AllowAccess
+        googleScriptUrl={googleFeedUrl()}
+        googleFeedOn={status.googleFeed}
+        ingestOrigin={origin}
+      />
       <Connections
         googleConfigured={status.googleConfigured}
         googleConnected={status.google}

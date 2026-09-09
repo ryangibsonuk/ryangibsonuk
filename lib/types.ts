@@ -99,6 +99,7 @@ export type IntegrationStatus = {
   google: boolean;
   googleEmail: string | null;
   googleConfigured: boolean;
+  googleFeed: boolean;
   chatgpt: boolean;
 };
 
@@ -108,6 +109,9 @@ export const SOURCES = [
   "grok",
   "grok-bot",
   "github",
+  "gmail",
+  "drive",
+  "calendar",
   "life",
   "manual",
 ] as const;

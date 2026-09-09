@@ -1,73 +1,127 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ChangelogEntry } from "@/lib/types";
-import { Card, Eyebrow, SearchField } from "./ui";
-import { useLiveTasks } from "./TaskBoard";
-import type { Task } from "@/lib/types";
+import type { FeedItem } from "@/lib/feed";
+import { formatStamp, sourceLabel } from "@/lib/format";
+import { Card, Eyebrow, Pill, SearchField } from "./ui";
 
 export function ActivityBoard({
-  changelog,
-  seedTasks,
+  initial,
+  googleFeed,
 }: {
-  changelog: ChangelogEntry[];
-  seedTasks: Task[];
+  initial: FeedItem[];
+  googleFeed: boolean;
 }) {
-  const { activity } = useLiveTasks(seedTasks);
   const [query, setQuery] = useState("");
+  const [rows, setRows] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
-  const rows = useMemo(() => {
-    const live = activity.map((entry) => ({
-      date: new Date(entry.createdAt).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }),
-      project: entry.project,
-      action: entry.action,
-      actor: entry.actor,
-      result: entry.result,
-      href: undefined as string | undefined,
-    }));
+  const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return [...live, ...changelog].filter(
-      (entry) =>
-        !needle ||
-        [entry.action, entry.project, entry.actor, entry.result]
-          .join(" ")
-          .toLowerCase()
-          .includes(needle),
+    if (!needle) return rows;
+    return rows.filter((entry) =>
+      [entry.title, entry.detail, entry.source, entry.project]
+        .join(" ")
+        .toLowerCase()
+        .includes(needle),
     );
-  }, [activity, changelog, query]);
+  }, [query, rows]);
+
+  async function refresh() {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const sync = await fetch("/api/sync", { method: "POST" });
+      const synced = (await sync.json()) as {
+        results?: { channel: string; ok: boolean; detail: string }[];
+        error?: string;
+      };
+      if (!sync.ok) throw new Error(synced.error || "Refresh failed");
+      const feed = await fetch("/api/activity");
+      const payload = (await feed.json()) as { feed?: FeedItem[] };
+      if (payload.feed) setRows(payload.feed);
+      const notes = (synced.results ?? [])
+        .filter((item) =>
+          ["google-feed", "github", "chatgpt"].includes(item.channel),
+        )
+        .map((item) => item.detail)
+        .join(" ");
+      setMessage(notes || "Feed updated.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Refresh failed");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <header>
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-copper">
-          Ledger
+          Feed
         </p>
         <h1 className="display mt-2 text-4xl">Activity</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          Seeded change log plus every task toggle from this dashboard or a
-          connected assistant.
+          Gmail, Drive, Calendar, Cursor/GitHub, ChatGPT and Grok Bot in one
+          list. Allow Google on Control panel. Refresh pulls the latest.
         </p>
       </header>
-      <SearchField value={query} onChange={setQuery} placeholder="Search activity" />
+      <div className="flex flex-wrap items-center gap-3">
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          placeholder="Search activity"
+        />
+        <button
+          type="button"
+          onClick={refresh}
+          disabled={busy}
+          className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper disabled:opacity-50"
+        >
+          {busy ? "Refreshing…" : "Refresh"}
+        </button>
+        <Pill>{googleFeed ? "Google allowed" : "Google needs Allow"}</Pill>
+      </div>
+      {message ? <p className="text-sm text-ink-soft">{message}</p> : null}
       <Card>
         <Eyebrow>
-          {rows.length} {rows.length === 1 ? "entry" : "entries"}
+          {visible.length} {visible.length === 1 ? "item" : "items"}
         </Eyebrow>
-        <ol className="mt-4 divide-y divide-line">
-          {rows.map((entry, index) => (
-            <li key={`${entry.action}-${index}`} className="py-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-muted">
-                {entry.date} · {entry.actor} · {entry.project}
-              </p>
-              <p className="mt-1 text-base font-medium">{entry.action}</p>
-              <p className="mt-1 text-sm leading-6 text-ink-soft">{entry.result}</p>
-            </li>
-          ))}
-        </ol>
+        {visible.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">
+            Nothing in the feed yet. Allow Google on Control panel, then
+            Refresh.
+          </p>
+        ) : (
+          <ol className="mt-4 divide-y divide-line">
+            {visible.map((entry) => (
+              <li key={entry.id} className="py-4">
+                <p className="text-xs uppercase tracking-[0.14em] text-muted">
+                  {formatStamp(entry.ts)} · {sourceLabel(entry.source)}
+                  {entry.project ? ` · ${entry.project}` : ""}
+                </p>
+                {entry.url ? (
+                  <a
+                    href={entry.url}
+                    className="mt-1 block text-base font-medium text-copper hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {entry.title}
+                  </a>
+                ) : (
+                  <p className="mt-1 text-base font-medium">{entry.title}</p>
+                )}
+                {entry.detail ? (
+                  <p className="mt-1 text-sm leading-6 text-ink-soft">
+                    {entry.detail}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        )}
       </Card>
     </div>
   );

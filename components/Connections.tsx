@@ -179,6 +179,11 @@ export function Connections({
 
   return (
     <div className="grid gap-4">
+      <details className="rounded-[1.75rem] border border-line bg-white/70 p-6">
+        <summary className="cursor-pointer text-sm font-medium">
+          Optional: two-way Gmail labels (OAuth client)
+        </summary>
+        <div className="mt-4">
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Eyebrow>Gmail and Drive</Eyebrow>
@@ -301,6 +306,8 @@ export function Connections({
           </div>
         </form>
       </Card>
+        </div>
+      </details>
 
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-2">
