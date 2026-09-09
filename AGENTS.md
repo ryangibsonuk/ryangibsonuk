@@ -56,6 +56,7 @@ Gmail and Drive writes only happen after OAuth. Without credentials, HQ still st
 
 ```
 cp .env.example .env.local
-npm install
-npm run dev
+./scripts/docker-up.sh
 ```
+
+Without Docker: `npm install` then `npm run dev`.

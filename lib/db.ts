@@ -4,7 +4,9 @@ import { DatabaseSync } from "node:sqlite";
 import { getSeedTasks } from "./data";
 import type { TaskActivity, TaskState } from "./types";
 
-const dbPath = join(process.cwd(), "data", "hq.sqlite");
+const dataDir =
+  process.env.HQ_DATA_DIR?.trim() || join(process.cwd(), "data");
+const dbPath = join(dataDir, "hq.sqlite");
 
 let cached: DatabaseSync | null = null;
 

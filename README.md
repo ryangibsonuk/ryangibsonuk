@@ -6,11 +6,24 @@ This repository is **Gibson HQ / Ryan Control Centre**, the git-backed version o
 
 ```bash
 cp .env.example .env.local
+```
+
+Set `DASHBOARD_PIN` in `.env.local`. Assistants keep using `CONTROL_CENTRE_API_KEY` on the integration routes.
+
+**Docker** (recommended if `npm run dev` / localhost forwarding fails):
+
+```bash
+./scripts/docker-up.sh
+```
+
+Or `docker compose --env-file .env.local up --build`. Open [http://localhost:3000](http://localhost:3000). The container binds `0.0.0.0:3000`.
+
+Without Docker:
+
+```bash
 npm install
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000). Set `DASHBOARD_PIN` to lock the UI. Assistants keep using `CONTROL_CENTRE_API_KEY` on the integration routes.
 
 The **control panel** is in the left nav (also `/teammates` or `/control-panel`). That is where you paste Google OAuth details, connect Gmail/Drive, save the ChatGPT app origin, and press Sync now.
 
@@ -22,7 +35,7 @@ The **control panel** is in the left nav (also `/teammates` or `/control-panel`)
 | Decisions | Standing rules (Andrew/Carl parked, inbox quiet, insurance) |
 | Activity | Change log plus every task toggle |
 | Links | Drive, trackers, live sites |
-| Teammates | ChatGPT, Cursor, Grok, Google connect, Sync now |
+| Control panel | ChatGPT, Cursor, Grok, Google connect, Sync now |
 | Grok | Full-page chat (`XAI_API_KEY`) |
 
 ## Two-way sync

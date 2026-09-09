@@ -1,0 +1,17 @@
+{
+  "name": "Gibson HQ",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "hq",
+      "command": "npm run dev",
+      "description": "Gibson HQ dashboard on port 3000, bound to 0.0.0.0"
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000
+    }
+  ]
+}

@@ -7,6 +7,13 @@ function expectedToken(pin: string): string {
   return createHmac("sha256", pin).update("gibson-hq").digest("hex");
 }
 
+function cookieSecure(): boolean {
+  const override = process.env.COOKIE_SECURE?.trim().toLowerCase();
+  if (override === "true") return true;
+  if (override === "false") return false;
+  return process.env.NODE_ENV === "production";
+}
+
 export function pinConfigured(): string {
   return process.env.DASHBOARD_PIN?.trim() ?? "";
 }
@@ -29,7 +36,7 @@ export function unlockResponse(pin: string): NextResponse {
     value: expectedToken(pin),
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: cookieSecure(),
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
