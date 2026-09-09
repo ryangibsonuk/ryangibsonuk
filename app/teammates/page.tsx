@@ -1,9 +1,11 @@
 import { AppShell } from "@/components/AppShell";
 import { Connections } from "@/components/Connections";
 import { Card, Eyebrow, Pill } from "@/components/ui";
-import { getProjects } from "@/lib/data";
 import { chatgptStatus } from "@/lib/chatgpt";
+import { getProjects } from "@/lib/data";
 import { listSyncLog } from "@/lib/db";
+import { googleClient } from "@/lib/google";
+import { googleCallbackUrl, publicOrigin } from "@/lib/origin";
 import { getIntegrationStatus } from "@/lib/status";
 
 export default async function TeammatesPage({
@@ -15,13 +17,14 @@ export default async function TeammatesPage({
   const status = getIntegrationStatus();
   const chatgpt = chatgptStatus();
   const params = await searchParams;
+  const callbackUrl = googleCallbackUrl(await publicOrigin());
 
   const mates = [
     {
       name: "ChatGPT",
       role: "Published Control Centre",
       state: status.chatgpt ? "Two-way URL set" : "Needs app URL",
-      body: "The ChatGPT app can POST here as actor ChatGPT. HQ pushes the same updates back when CHATGPT_APP_URL is set, and Sync now pulls its D1 states.",
+      body: "The ChatGPT app can POST here as actor ChatGPT. HQ pushes the same updates back when the app origin is saved, and Sync now pulls its D1 states.",
     },
     {
       name: "Cursor",
@@ -49,9 +52,10 @@ export default async function TeammatesPage({
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-copper">
           Connect
         </p>
-        <h1 className="display mt-2 text-4xl">Teammates</h1>
+        <h1 className="display mt-2 text-4xl">Control panel</h1>
         <p className="mt-3 max-w-xl text-base leading-7 text-ink-soft">
-          Task ticks write here first, then to Gmail, Drive and the ChatGPT app.
+          This is the page for Gmail, Drive and ChatGPT. Paste Google OAuth
+          details and the published ChatGPT origin here, then Connect Google.
           Unlock with your PIN. Assistants use the API key, not the PIN.
         </p>
       </header>
@@ -73,8 +77,10 @@ export default async function TeammatesPage({
         googleConfigured={status.googleConfigured}
         googleConnected={status.google}
         googleEmail={status.googleEmail}
+        googleClientId={googleClient().clientId}
         chatgptConfigured={status.chatgpt}
         chatgptUrl={chatgpt.url}
+        callbackUrl={callbackUrl}
         log={listSyncLog(15)}
         googleResult={params.google}
       />

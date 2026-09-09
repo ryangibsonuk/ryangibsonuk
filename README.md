@@ -12,6 +12,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Set `DASHBOARD_PIN` to lock the UI. Assistants keep using `CONTROL_CENTRE_API_KEY` on the integration routes.
 
+The **control panel** is in the left nav (also `/teammates` or `/control-panel`). That is where you paste Google OAuth details, connect Gmail/Drive, save the ChatGPT app origin, and press Sync now.
+
 | Page | What it is |
 | --- | --- |
 | Overview | Needs Ryan, upcoming dates, recurring content, change log |

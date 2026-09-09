@@ -11,9 +11,7 @@ export async function GET(request: NextRequest) {
       { status: 501 },
     );
   }
-  const redirect =
-    process.env.GOOGLE_REDIRECT_URI?.trim() ||
-    `${request.nextUrl.origin}/api/auth/google/callback`;
+  const redirect = `${request.nextUrl.origin}/api/auth/google/callback`;
   return NextResponse.redirect(
     googleAuthUrl(signOAuthState({ redirectUri: redirect }), redirect),
   );

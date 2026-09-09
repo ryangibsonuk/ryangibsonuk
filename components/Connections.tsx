@@ -15,21 +15,26 @@ export function Connections({
   googleConfigured,
   googleConnected,
   googleEmail,
+  googleClientId,
   chatgptConfigured,
   chatgptUrl,
+  callbackUrl,
   log,
   googleResult,
 }: {
   googleConfigured: boolean;
   googleConnected: boolean;
   googleEmail: string | null;
+  googleClientId: string;
   chatgptConfigured: boolean;
   chatgptUrl: string | null;
+  callbackUrl: string;
   log: SyncLogEntry[];
   googleResult?: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [message, setMessage] = useState<string | null>(
     googleResult === "connected"
       ? "Google connected. Completing a task will now label Gmail and write Drive."
@@ -40,6 +45,10 @@ export function Connections({
   const [entries, setEntries] = useState(log);
   const [chatgptOrigin, setChatgptOrigin] = useState(chatgptUrl ?? "");
   const [chatgptReady, setChatgptReady] = useState(chatgptConfigured);
+  const [clientId, setClientId] = useState(googleClientId);
+  const [clientSecret, setClientSecret] = useState("");
+  const [googleReady, setGoogleReady] = useState(googleConfigured);
+  const [googleOn, setGoogleOn] = useState(googleConnected);
 
   async function syncNow() {
     setBusy(true);
@@ -99,11 +108,71 @@ export function Connections({
     }
   }
 
+  async function saveGoogle(event: React.FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setMessage(null);
+    try {
+      const body: { googleClientId: string; googleClientSecret?: string } = {
+        googleClientId: clientId,
+      };
+      if (clientSecret.trim()) body.googleClientSecret = clientSecret.trim();
+      const response = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const payload = (await response.json()) as {
+        error?: string;
+        google?: { configured: boolean; connected: boolean; email: string | null };
+      };
+      if (!response.ok) throw new Error(payload.error || "Could not save Google client");
+      setGoogleReady(Boolean(payload.google?.configured));
+      setGoogleOn(Boolean(payload.google?.connected));
+      setClientSecret("");
+      setMessage(
+        !clientId.trim()
+          ? "Google client cleared."
+          : payload.google?.configured
+            ? "Google client saved. Click Connect Google to sign in."
+            : "Client ID saved. Add the client secret too before Connect Google appears.",
+      );
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not save Google client");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function disconnect() {
     setBusy(true);
     await fetch("/api/auth/google/disconnect", { method: "POST" });
+    setGoogleOn(false);
     router.push("/teammates");
     router.refresh();
+  }
+
+  async function copyCallback() {
+    setMessage(`Redirect URI: ${callbackUrl}`);
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(callbackUrl);
+      } else {
+        throw new Error("clipboard unavailable");
+      }
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = callbackUrl;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2500);
   }
 
   return (
@@ -112,9 +181,9 @@ export function Connections({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Eyebrow>Gmail and Drive</Eyebrow>
           <Pill>
-            {googleConnected
+            {googleOn
               ? googleEmail || "Connected"
-              : googleConfigured
+              : googleReady
                 ? "Needs connect"
                 : "Needs OAuth client"}
           </Pill>
@@ -122,41 +191,100 @@ export function Connections({
         <h2 className="display mt-3 text-3xl">Google</h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
           Completing a Gmail-linked task marks the thread read and adds HQ and
-          HQ/Complete. Completing a Drive-folder task upserts{" "}
-          <code className="rounded bg-paper-2 px-1">hq-task-*.json</code> in that
-          folder. Completing a spreadsheet-linked task writes a Gibson HQ tab on
-          that sheet. Every tick also appends a row to a Drive sheet named
-          Gibson HQ Sync. Pull reads labels, folder files and those tabs back
-          into HQ.
+          HQ/Complete. Folder tasks upsert a status file. Spreadsheet tasks
+          write a Gibson HQ tab. Sync now reads those back.
         </p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          {googleConfigured && !googleConnected ? (
+        <ol className="mt-4 max-w-2xl list-decimal space-y-2 pl-5 text-sm leading-6 text-ink-soft">
+          <li>
+            Open{" "}
             <a
-              href="/api/auth/google"
-              className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper"
+              className="text-copper hover:underline"
+              href="https://console.cloud.google.com/apis/credentials"
+              target="_blank"
+              rel="noreferrer"
             >
-              Connect Google
+              Google Cloud credentials
             </a>
-          ) : null}
-          {googleConnected ? (
-            <button
-              type="button"
-              onClick={disconnect}
-              disabled={busy}
-              className="rounded-full border border-line px-4 py-2 text-sm"
-            >
-              Disconnect
-            </button>
-          ) : null}
+            . Create a project if you do not have one.
+          </li>
+          <li>
+            Enable Gmail API, Google Drive API and Google Sheets API for that
+            project.
+          </li>
+          <li>
+            Create an OAuth client of type Web application. Add this exact
+            redirect URI:
+          </li>
+        </ol>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <code className="rounded-full bg-paper-2 px-3 py-2 text-xs sm:text-sm">
+            {callbackUrl}
+          </code>
+          <button
+            type="button"
+            onClick={copyCallback}
+            className="rounded-full border border-line px-3 py-2 text-sm"
+          >
+            {copied ? "Copied" : "Copy URI"}
+          </button>
         </div>
-        {!googleConfigured ? (
-          <p className="mt-3 text-sm text-muted">
-            Create a Google Cloud OAuth client, enable Gmail, Drive and Sheets
-            APIs, add yourself as a test user, set the redirect to{" "}
-            {`{origin}/api/auth/google/callback`}, then set GOOGLE_CLIENT_ID and
-            GOOGLE_CLIENT_SECRET.
-          </p>
-        ) : null}
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
+          Under OAuth consent screen, add your Google account as a test user.
+          Then paste the client ID and secret here.
+        </p>
+        <form onSubmit={saveGoogle} className="mt-4 grid gap-3">
+          <label className="block max-w-xl">
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+              Client ID
+            </span>
+            <input
+              value={clientId}
+              onChange={(event) => setClientId(event.target.value)}
+              autoComplete="off"
+              className="w-full rounded-full border border-line bg-white/80 px-4 py-2 text-sm"
+            />
+          </label>
+          <label className="block max-w-xl">
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+              Client secret
+            </span>
+            <input
+              type="password"
+              value={clientSecret}
+              onChange={(event) => setClientSecret(event.target.value)}
+              placeholder={googleReady ? "Saved in HQ. Leave blank to keep." : ""}
+              autoComplete="new-password"
+              className="w-full rounded-full border border-line bg-white/80 px-4 py-2 text-sm"
+            />
+          </label>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="submit"
+              disabled={busy}
+              className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper disabled:opacity-50"
+            >
+              Save Google client
+            </button>
+            {googleReady && !googleOn ? (
+              <a
+                href="/api/auth/google"
+                className="rounded-full bg-copper px-4 py-2 text-sm font-medium text-paper"
+              >
+                Connect Google
+              </a>
+            ) : null}
+            {googleOn ? (
+              <button
+                type="button"
+                onClick={disconnect}
+                disabled={busy}
+                className="rounded-full border border-line px-4 py-2 text-sm"
+              >
+                Disconnect
+              </button>
+            ) : null}
+          </div>
+        </form>
       </Card>
 
       <Card>
@@ -166,11 +294,12 @@ export function Connections({
         </div>
         <h2 className="display mt-3 text-3xl">ChatGPT</h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
-          HQ pushes each complete/reopen to the published app{" "}
-          <code className="rounded bg-paper-2 px-1">/api/integrations/tasks</code>
-          . That app can POST the same path here with actor ChatGPT. Sync now
-          pulls its D1 states. Paste the published origin below, or set
-          CHATGPT_APP_URL. Use CHATGPT_APP_KEY if it uses a different secret.
+          Paste the origin of the published vinext app (the site you got from
+          ChatGPT when it shipped Ryan Control Centre), not a chatgpt.com chat
+          URL. HQ will POST{" "}
+          <code className="rounded bg-paper-2 px-1">/api/integrations/tasks</code>{" "}
+          there. Sync now pulls the other way. The same API key as HQ unless you
+          set CHATGPT_APP_KEY.
         </p>
         <form onSubmit={saveChatgptUrl} className="mt-4 flex flex-wrap gap-3">
           <input

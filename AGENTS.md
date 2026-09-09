@@ -48,7 +48,7 @@ Completing a task in HQ fans out:
 
 Inbound: Teammates → Sync now, or `POST /api/sync`. ChatGPT can also POST here as actor ChatGPT.
 
-Google needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, then Connect Google. ChatGPT needs `CHATGPT_APP_URL`.
+Google needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (or paste them on Control panel), then Connect Google. ChatGPT needs the published app origin on Control panel.
 
 Gmail and Drive writes only happen after OAuth. Without credentials, HQ still stores the tick locally.
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ChangelogEntry, IntegrationStatus, Project, Schedule, Task } from "@/lib/types";
 import { greeting } from "@/lib/format";
@@ -93,6 +94,22 @@ export function TodayBoard({
         <Pill>Google {status.google ? status.googleEmail || "on" : "off"}</Pill>
         <Pill>ChatGPT {status.chatgpt ? "url set" : "needs URL"}</Pill>
       </div>
+
+      <Card>
+        <Eyebrow>Control panel</Eyebrow>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
+          Gmail, Drive and the published ChatGPT app are wired from Control
+          panel in the left nav. Paste the Google OAuth client there, then
+          Connect Google. ChatGPT needs the published app origin, not a chat
+          link.
+        </p>
+        <Link
+          href="/teammates"
+          className="mt-4 inline-flex rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper"
+        >
+          Open control panel
+        </Link>
+      </Card>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}
       {syncNote ? <p className="text-sm text-ink-soft">{syncNote}</p> : null}

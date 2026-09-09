@@ -1,6 +1,7 @@
 import {
   clearOAuthToken,
   getOAuthToken,
+  getSetting,
   logSync,
   saveOAuthToken,
 } from "./db";
@@ -30,8 +31,14 @@ export type CompletionSignal = {
 
 export function googleClient() {
   return {
-    clientId: process.env.GOOGLE_CLIENT_ID?.trim() ?? "",
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET?.trim() ?? "",
+    clientId:
+      process.env.GOOGLE_CLIENT_ID?.trim() ||
+      getSetting("google_client_id") ||
+      "",
+    clientSecret:
+      process.env.GOOGLE_CLIENT_SECRET?.trim() ||
+      getSetting("google_client_secret") ||
+      "",
     redirectUri:
       process.env.GOOGLE_REDIRECT_URI?.trim() ||
       "http://localhost:3000/api/auth/google/callback",
